@@ -1,4 +1,4 @@
-#Main page for Apul.py http://github.com/GrautDevlopes/Apul.py/
+#Main page for Apul.py https://github.com/GrautDevelopes/Apul.py
 #Very alpha. Expect bugs!
 #Only use redirectors that go to blobar and don't go to clickvalidator.net. Examples:
 #http://youtuber.com/ << Redirects to clickvalidator
