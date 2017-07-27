@@ -1,9 +1,10 @@
 #Main page for Apul.py http://github.com/GrautDevelopes/Apul.py/
 #Very alpha. Expect bugs!
 #Only use redirectors that go to blobar and don't go to clickvalidator.net. Examples:
-#http://youtuber.com/ << Redirects to clickvalidator
-#http://pete.com/ << The only one that seems to work
-#http://youtibe.com/ << Redirects to clickvalidator
+#Usage `python Apul.py http://youtuber.com/ youtuber.com.log` 
+#http://youtuber.com/
+#http://pete.com/
+#http://youtibe.com/
 # @Thunder when you get script sorted out.
 import urllib2
 import sys
@@ -19,6 +20,11 @@ def clean_text(rgx, text):
     new_text = text
     new_text = re.sub(rgx, '', new_text)
     return new_text
+def save():
+     logstream = open(sys.argv[2], 'a+') #Was 'w'
+     for item in Popups:
+         logstream.write("%s\n" % item)
+     logstream.close()
 def getnewblobarurl():
      req = urllib2.Request(sys.argv[1], headers={ 'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36' })
      RedirectorResponse = urllib2.urlopen(req)
@@ -42,11 +48,11 @@ if "http://blobar.org/d/p" in RedirectorResponseHTML:
          PopUpURL = Redirector3Response.geturl()
          if PopUpURL == 'http://ww90.blobar.org/':
 		     getnewblobarurl()
-         num = re.search(r"^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})", PopUpHTML)#.group(0) #Much thanks Laurence O'Donnell from regexlib
+         num = re.search(r"\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})", PopUpHTML).group(0) #Much thanks Laurence O'Donnell from regexlib
          Redirector3Response.close()
          if num:
              ##print(PopUpURL + " | " + num)
-             Popups.append(PopUpURL + " | {}".format(num.group(0)))
+             Popups.append(PopUpURL + " | " + num)
              #print(PopUpURL + " | {}".format(num.group(0)))
          else:
              Popups.append(PopUpURL)
@@ -58,5 +64,6 @@ if "http://blobar.org/d/p" in RedirectorResponseHTML:
          if os.name != 'nt':
               _=os.system("clear")
          print "\n".join(Popups)
+         save()
 else:
     print("[Apul] The redirector " + sys.argv[1] + " does not use blobar.")
