@@ -48,11 +48,12 @@ if "http://blobar.org/d/p" in RedirectorResponseHTML:
          PopUpURL = Redirector3Response.geturl()
          if PopUpURL == 'http://ww90.blobar.org/':
 		     getnewblobarurl()
-         num = re.search(r"\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})", PopUpHTML).group(0) #Much thanks Laurence O'Donnell from regexlib
+         num = re.search(r"(((((\(\d{3})|(\s\d{3}))((\)|-)|(\s|\) )|(\)-)?))?)|(\d{3}(-|\s)))?\d{3}(-|\s)\d{4}", PopUpHTML)#.group(0) #Much thanks to Eclipse. Created by Eclipse for Graut and the scambaiting community. https://0-eclipse-0.github.io/phone_regex.txt
          Redirector3Response.close()
          if num:
              ##print(PopUpURL + " | " + num)
-             Popups.append(PopUpURL + " | " + num)
+             #Popups.append(PopUpURL + " | " + num)
+			 Popups.append(PopUpURL + " | {}".format(num.group(0)))
              #print(PopUpURL + " | {}".format(num.group(0)))
          else:
              Popups.append(PopUpURL)
