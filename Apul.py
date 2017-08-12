@@ -5,7 +5,6 @@
 #http://youtuber.com/
 #http://pete.com/
 #http://youtibe.com/
-# @Thunder when you get script sorted out.
 import urllib2
 import sys
 import re
@@ -25,6 +24,12 @@ def save():
      for item in Popups:
          logstream.write("%s\n" % item)
      logstream.close()
+     lines = open(sys.argv[2], 'r').readlines()
+     lines_set = set(lines)
+     out  = open(sys.argv[2], 'w')
+     for line in lines_set:
+         out.write(line)
+	
 def getnewblobarurl():
      req = urllib2.Request(sys.argv[1], headers={ 'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36' })
      RedirectorResponse = urllib2.urlopen(req)
@@ -46,7 +51,7 @@ if "://blobar.org/d/p" in RedirectorResponseHTML:
          Redirector3Response = urllib2.urlopen(req3)
          PopUpHTML = Redirector3Response.read() #TODO: Extract phone number from popup
          PopUpURL = Redirector3Response.geturl()
-         if PopUpURL == 'http://ww90.blobar.org/':
+         if 'ww90.blobar.org' in PopUpURL:
 		     getnewblobarurl()
          num = re.search(r"(((((\(\d{3})|(\s\d{3}))((\)|-)|(\s|\) )|(\)-)?))?)|(\d{3}(-|\s)))?\d{3}(-|\s)\d{4}", PopUpHTML)#.group(0) #Much thanks to Eclipse. Created by Eclipse for Graut and the scambaiting community. https://0-eclipse-0.github.io/phone_regex.txt
          Redirector3Response.close()
