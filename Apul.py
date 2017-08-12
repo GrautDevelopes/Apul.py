@@ -38,7 +38,7 @@ def getnewblobarurl():
      Redirector2Response.close()
      return Redirecter3url
      #print("[Apul] Resolving " + Redirecter3url + " ...") #The blobar url
-if "http://blobar.org/d/p" in RedirectorResponseHTML:
+if "://blobar.org/d/p" in RedirectorResponseHTML:
     print("[Apul] Verifed " + sys.argv[1] + " !")
     Popups = []
     while True:
