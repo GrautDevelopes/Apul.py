@@ -5,6 +5,7 @@
 #http://youtuber.com/
 #http://pete.com/
 #http://youtibe.com/
+# @Thunder when you get script sorted out.
 import urllib2
 import sys
 import re
@@ -37,12 +38,13 @@ def getnewblobarurl():
      RedirectorResponse.close()
      trim0 = clean_text('.*var u = \'', RedirectorResponseHTML)
      trim1 = clean_text('\'\+\(\(r.*', trim0)
-     req2 = urllib2.Request(clean_text('\'\+\(\(.*', trim1))
+     trim2 = clean_text('\'\+\(\(.*', trim1)
+     req2 = urllib2.Request(trim2)
      Redirector2Response = urllib2.urlopen(req2)
-     Redirecter3url = Redirector2Response.geturl() + "&z=240"
+     Redirecter3url = Redirector2Response.geturl() + "2&r=&z=240"
      Redirector2Response.close()
+     #print("[Apul] Resolving " + Redirecter3url + " ...") #The blobar url, uncomment for verbose/debug
      return Redirecter3url
-     #print("[Apul] Resolving " + Redirecter3url + " ...") #The blobar url
 if "://blobar.org/d/p" in RedirectorResponseHTML:
     print("[Apul] Verifed " + sys.argv[1] + " !")
     Popups = []
@@ -56,13 +58,9 @@ if "://blobar.org/d/p" in RedirectorResponseHTML:
          num = re.search(r"(((((\(\d{3})|(\s\d{3}))((\)|-)|(\s|\) )|(\)-)?))?)|(\d{3}(-|\s)))?\d{3}(-|\s)\d{4}", PopUpHTML)#.group(0) #Much thanks to Eclipse. Created by Eclipse for Graut and the scambaiting community. https://0-eclipse-0.github.io/phone_regex.txt
          Redirector3Response.close()
          if num:
-             ##print(PopUpURL + " | " + num)
-             #Popups.append(PopUpURL + " | " + num)
 			 Popups.append(PopUpURL + " | {}".format(num.group(0)))
-             #print(PopUpURL + " | {}".format(num.group(0)))
          else:
              Popups.append(PopUpURL)
-             #print(PopUpURL)
          Popups = list(set(Popups))
          Popups.sort()
          if os.name == 'nt':
