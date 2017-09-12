@@ -5,14 +5,22 @@
 #http://youtuber.com/
 #http://pete.com/
 #http://youtibe.com/
-# @Thunder when you get script sorted out.
 import urllib2
 import sys
 import re
 import os
+import time
 print("[Apul] Starting...")
 print("[Apul] Checking " + sys.argv[1] + " ...")
-req = urllib2.Request(sys.argv[1], headers={ 'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36' })
+print("[Apul] Getting timezone...")
+utcoffsetinsec = str(time.timezone / 75) #This is a new feature please report any issues with timezone identification!
+print("[Apul] " + utcoffsetinsec + " is current timezone.")
+### Config ######################
+#This currently gets Windows Popups on Chrome. 
+#Feel free to change it if you know what you're doing.
+ua = "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"
+#################################
+req = urllib2.Request(sys.argv[1], headers={ 'User-Agent': ua })
 RedirectorResponse = urllib2.urlopen(req)
 RedirectorResponseHTML = RedirectorResponse.read()
 RedirectorResponse.close()
@@ -32,7 +40,7 @@ def save():
          out.write(line)
 	
 def getnewblobarurl():
-     req = urllib2.Request(sys.argv[1], headers={ 'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36' })
+     req = urllib2.Request(sys.argv[1], headers={ 'User-Agent': ua })
      RedirectorResponse = urllib2.urlopen(req)
      RedirectorResponseHTML = RedirectorResponse.read()
      RedirectorResponse.close()
@@ -41,17 +49,17 @@ def getnewblobarurl():
      trim2 = clean_text('\'\+\(\(.*', trim1)
      req2 = urllib2.Request(trim2)
      Redirector2Response = urllib2.urlopen(req2)
-     Redirecter3url = Redirector2Response.geturl() + "2&r=&z=240"
+     Redirecter3url = Redirector2Response.geturl() + "2&r=&z=" + utcoffsetinsec
      Redirector2Response.close()
-     #print("[Apul] Resolving " + Redirecter3url + " ...") #The blobar url, uncomment for verbose/debug
+     #print("[Apul] Resolving " + Redirecter3url + " ...") #The blobar url
      return Redirecter3url
 if "://blobar.org/d/p" in RedirectorResponseHTML:
     print("[Apul] Verifed " + sys.argv[1] + " !")
     Popups = []
     while True:
-         req3 = urllib2.Request(getnewblobarurl(), headers={ 'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36' })
+         req3 = urllib2.Request(getnewblobarurl(), headers={ 'User-Agent': ua })
          Redirector3Response = urllib2.urlopen(req3)
-         PopUpHTML = Redirector3Response.read() #TODO: Extract phone number from popup
+         PopUpHTML = Redirector3Response.read()
          PopUpURL = Redirector3Response.geturl()
          if 'ww90.blobar.org' in PopUpURL:
 		     getnewblobarurl()
