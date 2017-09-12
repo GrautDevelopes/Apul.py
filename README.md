@@ -3,7 +3,5 @@ Apul (Automatic PopUp Logger) automatically gets tech support scammer popups and
 # Usage
 `python Apul.py http://pete.com/ pete.com.log`
 # Not getting anything?
-If your not in my timezone they're might be an issue. Copy this in the url bar and add a 'j' to the front, press enter.
-`avascript:var z = (new Date()).getTimezoneOffset();alert(z);`
-Remember the number that showed up. Find and replace `&z=240` on line 37 with `&z=` and the number that showed up. If your number is also 240 it means the time isn't the issue. Change the useragent on both lines 29 and 45 to another browser, preferrably Chrome or IE/Edge.
-If you still have issues you can contact me on discord, `Graut#0778`.
+Change the useragent in the config on line 18 to another browser, preferrably Chrome or IE/Edge. You also have to run this on an United States or Canadian connection on a residential ip. Otherwise it might be a slow day for popups. You should also check back and update the script often, at one point the script bricked when they changed the way they redirected. So it's important to keep updating to the newest version.
+If you still have issues you can contact me on discord, `Graut#0778`, or file an issue in https://github.com/GrautDevelopes/Apul.py/issues/
