@@ -13,11 +13,12 @@ import time
 print("[Apul] Starting...")
 print("[Apul] Checking " + sys.argv[1] + " ...")
 print("[Apul] Getting timezone...")
-utcoffsetinsec = str(time.timezone / 75) #This is a new feature please report any issues with timezone identification!
-print("[Apul] " + utcoffsetinsec + " is current timezone.")
+utcoffsetinmin = str(time.timezone / 60) #During DST this returns DST while the browser still wants to use Standard? #This is a new feature please report any issues with timezone identification!
+print("[Apul] " + utcoffsetinmin + " is current timezone.")
 ### Config ######################
 #This currently gets Windows Popups on Chrome. 
 #Feel free to change it if you know what you're doing.
+#utcoffsetinmin = 240 #Overides time detection if uncommented
 ua = "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"
 #################################
 req = urllib2.Request(sys.argv[1], headers={ 'User-Agent': ua })
@@ -49,7 +50,7 @@ def getnewblobarurl():
      trim2 = clean_text('\'\+\(\(.*', trim1)
      req2 = urllib2.Request(trim2)
      Redirector2Response = urllib2.urlopen(req2)
-     Redirecter3url = Redirector2Response.geturl() + "2&r=&z=" + utcoffsetinsec
+     Redirecter3url = Redirector2Response.geturl() + "2&r=&z=" + utcoffsetinmin
      Redirector2Response.close()
      #print("[Apul] Resolving " + Redirecter3url + " ...") #The blobar url
      return Redirecter3url
