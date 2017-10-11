@@ -15,11 +15,16 @@ print("[Apul] Checking " + sys.argv[1] + " ...")
 print("[Apul] Getting timezone...")
 utcoffsetinmin = str(time.timezone / 60) #During DST this returns DST while the browser still wants to use Standard? #This is a new feature please report any issues with timezone identification!
 print("[Apul] " + utcoffsetinmin + " is current timezone.")
-### Config ######################
-#This currently gets Windows Popups on Chrome. 
-#Feel free to change it if you know what you're doing.
+### Config ###################### 
+#Feel free to change these if you know what you're doing.
 #utcoffsetinmin = 240 #Overides time detection if uncommented
-ua = "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"
+### Useragent ###################
+ua = "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36" #Chrome
+#ua = "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; TNJB; rv:11.0) like Gecko" #Internet Explorer
+#ua = "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0" #Edge
+#ua = "Mozilla/5.0 (Macintosh; U; PPC Mac OS X; fi-fi) AppleWebKit/420+ (KHTML, like Gecko) Safari/419.3" #Mac Safari
+#ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 like Mac OS X) AppleWebKit/602.1.38 (KHTML, like Gecko) Version/10.0 Mobile/14A5297c Safari/602.1" #iPhone Safari
+#ua = "Insert own useragent here" #Custom
 #################################
 req = urllib2.Request(sys.argv[1], headers={ 'User-Agent': ua })
 RedirectorResponse = urllib2.urlopen(req)
@@ -54,7 +59,7 @@ def getnewblobarurl():
      Redirector2Response.close()
      #print("[Apul] Resolving " + Redirecter3url + " ...") #The blobar url
      return Redirecter3url
-if "://blobar.org/d/p" in RedirectorResponseHTML:
+if "related content to what you are looking for" in RedirectorResponseHTML:
     print("[Apul] Verifed " + sys.argv[1] + " !")
     Popups = []
     while True:
