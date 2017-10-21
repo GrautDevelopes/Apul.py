@@ -1,13 +1,12 @@
 #Main page for Apul.py http://github.com/GrautDevelopes/Apul.py/
 #Very alpha. Expect bugs!
-#As of 10/14/17 U.S.A date format, blobar.org has been taken down and moved to a new domain (sennamolasses.com). The reloader has been fixed to work with any domain from now on. 
-#For the sake of variables and documentation, the name blobar will still be used. 
 #Only use redirectors that go to blobar and don't go to clickvalidator.net. Examples:
 #Usage `python Apul.py http://youtuber.com/ youtuber.com.log` 
 #http://youtuber.com/
 #http://pete.com/
 #http://youtibe.com/
 import urllib2
+import base64
 import sys
 import re
 import os
@@ -22,8 +21,8 @@ print("[Apul] " + utcoffsetinmin + " is current timezone.")
 #utcoffsetinmin = 240 #Overides time detection if uncommented
 ### Useragent ###################
 #ua = "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36" #Chrome
-#ua = "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; TNJB; rv:11.0) like Gecko" #Internet Explorer
-ua = "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0" #Edge
+ua = "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; TNJB; rv:11.0) like Gecko" #Internet Explorer
+#ua = "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0" #Edge
 #ua = "Mozilla/5.0 (Macintosh; U; PPC Mac OS X; fi-fi) AppleWebKit/420+ (KHTML, like Gecko) Safari/419.3" #Mac Safari
 #ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 like Mac OS X) AppleWebKit/602.1.38 (KHTML, like Gecko) Version/10.0 Mobile/14A5297c Safari/602.1" #iPhone Safari
 #ua = "Insert own useragent here" #Custom
@@ -57,12 +56,13 @@ def getnewblobarurl():
      trim2 = clean_text('\'\+\(\(.*', trim1)
      req2 = urllib2.Request(trim2)
      Redirector2Response = urllib2.urlopen(req2)
-     Redirecter3url = Redirector2Response.geturl() + "2&r=&z=" + utcoffsetinmin
+     Redirecter3url = Redirector2Response.geturl() + "2.1." + base64ofdomain + "&r=&z=" + utcoffsetinmin
      Redirector2Response.close()
      #print("[Apul] Resolving " + Redirecter3url + " ...") #The blobar url
      return Redirecter3url
 if "related content to what you are looking for" in RedirectorResponseHTML:
     print("[Apul] Verifed " + sys.argv[1] + " !")
+    base64ofdomain = base64.urlsafe_b64encode(clean_text('/',clean_text('.*://',sys.argv[1])))
     Popups = []
     while True:
          req3 = urllib2.Request(getnewblobarurl(), headers={ 'User-Agent': ua })
