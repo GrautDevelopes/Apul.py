@@ -54,11 +54,8 @@ def getnewblobarurl():
      trim0 = clean_text('.*var u = \'', RedirectorResponseHTML)
      trim1 = clean_text('\'\+\(\(r.*', trim0)
      trim2 = clean_text('\'\+\(\(.*', trim1)
-     req2 = urllib2.Request(trim2)
-     Redirector2Response = urllib2.urlopen(req2)
-     Redirecter3url = Redirector2Response.geturl() + "2.1." + base64ofdomain + "&r=&z=" + utcoffsetinmin
-     Redirector2Response.close()
-     #print("[Apul] Resolving " + Redirecter3url + " ...") #The blobar url
+     Redirecter3url = trim2 + "2.1." + base64ofdomain + "&r=&z=" + utcoffsetinmin
+     print("[Apul] Resolving " + Redirecter3url + " ...") #The blobar url
      return Redirecter3url
 if "related content to what you are looking for" in RedirectorResponseHTML:
     print("[Apul] Verifed " + sys.argv[1] + " !")
