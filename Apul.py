@@ -14,7 +14,7 @@ import time
 print("[Apul] Starting...")
 print("[Apul] Checking " + sys.argv[1] + " ...")
 print("[Apul] Getting timezone...")
-utcoffsetinmin = str(time.timezone / 60) #During DST this returns DST while the browser still wants to use Standard? #This is a new feature please report any issues with timezone identification!
+utcoffsetinmin = str(time.timezone / 60)# - 60) #remove ")#" when US DST adds back an hour. #During DST this returns DST while the browser still wants to use Standard? #This is a new feature please report any issues with timezone identification!
 print("[Apul] " + utcoffsetinmin + " is current timezone.")
 ### Config ###################### 
 #Feel free to change these if you know what you're doing.
@@ -55,7 +55,7 @@ def getnewblobarurl():
      trim1 = clean_text('\'\+\(\(r.*', trim0)
      trim2 = clean_text('\'\+\(\(.*', trim1)
      Redirecter3url = trim2 + "2.1." + base64ofdomain + "&r=&z=" + utcoffsetinmin
-     print("[Apul] Resolving " + Redirecter3url + " ...") #The blobar url
+     print("[Apul] Resolving " + Redirecter3url + " at " + sys.argv[1] + " ...") #The blobar url
      return Redirecter3url
 if "related content to what you are looking for" in RedirectorResponseHTML:
     print("[Apul] Verifed " + sys.argv[1] + " !")
