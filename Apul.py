@@ -31,10 +31,12 @@ req = urllib2.Request(sys.argv[1], headers={ 'User-Agent': ua })
 RedirectorResponse = urllib2.urlopen(req)
 RedirectorResponseHTML = RedirectorResponse.read()
 RedirectorResponse.close()
+
 def clean_text(rgx, text):
     new_text = text
     new_text = re.sub(rgx, '', new_text)
     return new_text
+
 def save():
      logstream = open(sys.argv[2], 'a+') #Was 'w'
      for item in Popups:
@@ -42,6 +44,7 @@ def save():
      logstream.close()
      lines = open(sys.argv[2], 'r').readlines()
      lines_set = set(lines)
+     logstream.close()
      out  = open(sys.argv[2], 'w')
      for line in lines_set:
          out.write(line)
@@ -55,8 +58,9 @@ def getnewblobarurl():
      trim1 = clean_text('\'\+\(\(r.*', trim0)
      trim2 = clean_text('\'\+\(\(.*', trim1)
      Redirecter3url = trim2 + "2.1." + base64ofdomain + "&r=&z=" + utcoffsetinmin
-     print("[Apul] Resolving " + Redirecter3url + " at " + sys.argv[1] + " ...") #The blobar url
+     #print("[Apul] Resolving " + Redirecter3url + " at " + sys.argv[1] + " ...") #The blobar url, disabled because we don't clear our screen anymore
      return Redirecter3url
+
 if "related content to what you are looking for" in RedirectorResponseHTML:
     print("[Apul] Verifed " + sys.argv[1] + " !")
     base64ofdomain = base64.urlsafe_b64encode(clean_text('/',clean_text('.*://',sys.argv[1])))
@@ -71,16 +75,14 @@ if "related content to what you are looking for" in RedirectorResponseHTML:
          num = re.search(r"(((((\(\d{3})|(\s\d{3}))((\)|-)|(\s|\) )|(\)-)?))?)|(\d{3}(-|\s)))?\d{3}(-|\s)\d{4}", PopUpHTML)#.group(0) #Much thanks to Eclipse. Created by Eclipse for Graut and the scambaiting community. https://0-eclipse-0.github.io/phone_regex.txt
          Redirector3Response.close()
          if num:
-			 Popups.append(PopUpURL + " | {}".format(num.group(0)))
+             outline = PopUpURL + " | {}".format(num.group(0))
          else:
-             Popups.append(PopUpURL)
+    	     outline = PopUpURL
          Popups = list(set(Popups))
          Popups.sort()
-         if os.name == 'nt':
-              _=os.system("cls")
-         if os.name != 'nt':
-              _=os.system("clear")
-         print "\n".join(Popups)
-         save()
+         if outline not in Popups:
+              print(outline)
+              Popups.append(outline)
+              save()
 else:
     print("[Apul] The redirector " + sys.argv[1] + " does not use blobar.")
