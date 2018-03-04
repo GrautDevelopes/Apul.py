@@ -16,21 +16,31 @@ import re
 import os
 import time
 import pytz
-import timedelta
-import datetime
+from datetime import datetime
 if len(sys.argv) < 3:
     sys.exit('Usage: python Apul.py http://example.com/ example.log')
-print '[Apul] Starting Release 030418...'  # Release numbers are based on date released in US format.
+print '[Apul] Starting Release 030418.2 ...'  # Release numbers are based on date released in US format with possible number after showing version of that day.
 print '[Apul] Checking ' + sys.argv[1] + ' ...'
 print '[Apul] Getting timezone...'
-print '[Apul] If you are using a US/Canada VPN open Apul.py in notepad and remove the # under this line and correct timezone if VPN not in Eastern US.'
-timezone = time.timezone
-#timezone = 'US/Eastern' #Overides time detection if uncommented
-if is_dst(timezone):
+print '[Apul] If you are outside US/Eastern timezone, change code below to correct timezone.'
+timezonename = 'US/Eastern' #Change code here
+
+
+def is_dst ():
+    """Determine whether or not Daylight Savings Time (DST)
+    is currently in effect (https://gist.github.com/dpapathanasiou/09bd2885813038d7d3eb)"""
+
+    x = datetime(datetime.now().year, 1, 1, 0, 0, 0, tzinfo=pytz.timezone(timezonename)) # Jan 1 of this year
+    y = datetime.now(pytz.timezone(timezonename))
+
+    # if DST is in effect, their offsets will be different
+    return not (y.utcoffset() == x.utcoffset())    
+    
+if is_dst():
+    utcoffsetinmin = str(time.timezone / 60 - 60)
+else:
     utcoffsetinmin = str(timezone / 60)
-    else:
-    utcoffsetinmin = str(timezone / 60 - 60)
-print '[Apul] ' + utcoffsetinmin + ' is current timezone.'
+print '[Apul] ' + utcoffsetinmin + ' is current offset. ' + timezonename + ' is current timezone.'
 
 ### Config ######################
 # Feel free to change these if you know what you're doing.
@@ -64,12 +74,6 @@ except Exception:
     pass
 redirectorresponseHTML = redirectorresponse.read()
 redirectorresponse.close()
-
-
-def is_dst(zonename):
-    tz = pytz.timezone(zonename)
-    now = pytz.utc.localize(datetime.utcnow())
-    return now.astimezone(tz).dst() != timedelta(0)
 
 
 def clean_text(rgx, text):
@@ -174,12 +178,12 @@ if 'related content to what you are looking for' \
                 outline = PopUpURL + ' | {}'.format(num.group(0))
             else:
                 outline = PopUpURL
-            Popups = list(set(Popups))
-            Popups.sort()
-            if outline not in Popups:
-                print outline
-                Popups.append(outline)
-                save()
+                Popups = list(set(Popups))
+                Popups.sort()
+                if outline not in Popups:
+                    print outline
+                    Popups.append(outline)
+                    save()
     else:
         print '[Apul] The redirector ' + sys.argv[1] \
             + ' does not use blobar.'
