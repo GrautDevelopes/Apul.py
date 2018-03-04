@@ -1,38 +1,75 @@
-#Main page for Apul.py http://github.com/GrautDevelopes/Apul.py/
-#Very alpha. Expect bugs!
-#Only use redirectors that go to blobar and don't go to clickvalidator.net. Examples:
-#Usage `python Apul.py http://youtuber.com/ youtuber.com.log`
-#http://youtuber.com/
-#http://pete.com/
-#http://youtibe.com/
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Main page for Apul.py http://github.com/GrautDevelopes/Apul.py/
+# I guess we are in beta now.
+# Only use redirectors that go to blobar and not to clickvalidator.net. Examples:
+# Example: python Apul.py http://youtuber.com/ youtuber.com.log
+# http://youtuber.com/
+# http://pete.com/
+# http://httfacebook.com/
+
 import urllib2
+import httplib
 import base64
 import sys
 import re
 import os
 import time
-print("[Apul] Starting...")
-print("[Apul] Checking " + sys.argv[1] + " ...")
-print("[Apul] Getting timezone...")
-utcoffsetinmin = str(
-    time.timezone / 60
-)  # - 60) #remove ")#" when US DST adds back an hour. #During DST this returns DST while the browser still wants to use Standard? #This is a new feature please report any issues with timezone identification!
-print("[Apul] " + utcoffsetinmin + " is current timezone.")
+import pytz
+import timedelta
+import datetime
+if len(sys.argv) < 3:
+    sys.exit('Usage: python Apul.py http://example.com/ example.log')
+print '[Apul] Starting Release 030418...'  # Release numbers are based on date released in US format.
+print '[Apul] Checking ' + sys.argv[1] + ' ...'
+print '[Apul] Getting timezone...'
+print '[Apul] If you are using a US/Canada VPN open Apul.py in notepad and remove the # under this line and correct timezone if VPN not in Eastern US.'
+timezone = time.timezone
+#timezone = 'US/Eastern' #Overides time detection if uncommented
+if is_dst(timezone):
+    utcoffsetinmin = str(timezone / 60)
+    else:
+    utcoffsetinmin = str(timezone / 60 - 60)
+print '[Apul] ' + utcoffsetinmin + ' is current timezone.'
+
 ### Config ######################
-#Feel free to change these if you know what you're doing.
-#utcoffsetinmin = 240 #Overides time detection if uncommented
+# Feel free to change these if you know what you're doing.
 ### Useragent ###################
-#ua = "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36" #Chrome
-ua = "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; TNJB; rv:11.0) like Gecko"  #Internet Explorer
-#ua = "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0" #Edge
-#ua = "Mozilla/5.0 (Macintosh; U; PPC Mac OS X; fi-fi) AppleWebKit/420+ (KHTML, like Gecko) Safari/419.3" #Mac Safari
-#ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 like Mac OS X) AppleWebKit/602.1.38 (KHTML, like Gecko) Version/10.0 Mobile/14A5297c Safari/602.1" #iPhone Safari
-#ua = "Insert own useragent here" #Custom
+ua = 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'  # Chrome
+# ua = 'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; TNJB; rv:11.0) like Gecko'  #Internet Explorer
+# ua = 'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0' #Edge
+# ua = 'Mozilla/5.0 (Macintosh; U; PPC Mac OS X; fi-fi) AppleWebKit/420+ (KHTML, like Gecko) Safari/419.3' #Mac Safari
+# ua = 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 like Mac OS X) AppleWebKit/602.1.38 (KHTML, like Gecko) Version/10.0 Mobile/14A5297c Safari/602.1' #iPhone Safari
+# ua = 'Insert own useragent here' #Custom
 #################################
+
 req = urllib2.Request(sys.argv[1], headers={'User-Agent': ua})
-RedirectorResponse = urllib2.urlopen(req)
-RedirectorResponseHTML = RedirectorResponse.read()
-RedirectorResponse.close()
+try:
+    redirectorresponse = urllib2.urlopen(req)
+except urllib2.HTTPError, e:
+    print '[ERROR] HTTPError: ' + str(e.code) + ', could not reach ' \
+        + sys.argv[1]
+    pass
+except urllib2.URLError, e:
+    print '[ERROR] URLError: ' + str(e.reason) + ', could not reach ' \
+        + sys.argv[1]
+    pass
+except httplib.HTTPException, e:
+    print '[ERROR] HTTPException, could not reach ' + sys.argv[1]
+    pass
+except Exception:
+    import traceback
+    print '[ERROR] Generic exception: ' + traceback.format_exc() \
+        + ', could not reach ' + sys.argv[1]
+    pass
+redirectorresponseHTML = redirectorresponse.read()
+redirectorresponse.close()
+
+
+def is_dst(zonename):
+    tz = pytz.timezone(zonename)
+    now = pytz.utc.localize(datetime.utcnow())
+    return now.astimezone(tz).dst() != timedelta(0)
 
 
 def clean_text(rgx, text):
@@ -42,9 +79,9 @@ def clean_text(rgx, text):
 
 
 def save():
-    logstream = open(sys.argv[2], 'a+')  #Was 'w'
+    logstream = open(sys.argv[2], 'a+')  # Was 'w'
     for item in Popups:
-        logstream.write("%s\n" % item)
+        logstream.write('%s\n' % item)
     logstream.close()
     lines = open(sys.argv[2], 'r').readlines()
     lines_set = set(lines)
@@ -56,43 +93,93 @@ def save():
 
 def getnewblobarurl():
     req = urllib2.Request(sys.argv[1], headers={'User-Agent': ua})
-    RedirectorResponse = urllib2.urlopen(req)
-    RedirectorResponseHTML = RedirectorResponse.read()
-    RedirectorResponse.close()
-    trim0 = clean_text('.*var u = \'', RedirectorResponseHTML)
+    try:
+        redirectorresponse = urllib2.urlopen(req)
+        redirectorresponseHTML = redirectorresponse.read()
+        redirectorresponse.close()
+    except urllib2.HTTPError, e:
+        print '[ERROR] HTTPError: ' + str(e.code) \
+            + ', could not reach ' + sys.argv[1]
+        pass
+    except urllib2.URLError, e:
+        print '[ERROR] URLError: ' + str(e.reason) \
+            + ', could not reach ' + sys.argv[1]
+        pass
+    except httplib.HTTPException, e:
+        print '[ERROR] HTTPException, could not reach ' + sys.argv[1]
+        pass
+    except Exception:
+        import traceback
+        print '[ERROR] Generic exception: ' + traceback.format_exc() \
+            + ', could not reach ' + sys.argv[1]
+        pass
+    trim0 = clean_text('.*var u = \'', redirectorresponseHTML)
     trim1 = clean_text('\'\+\(\(r.*', trim0)
     trim2 = clean_text('\'\+\(\(.*', trim1)
-    Redirecter3url = trim2 + "2.1." + base64ofdomain + "&r=&z=" + utcoffsetinmin
-    #print("[Apul] Resolving " + Redirecter3url + " at " + sys.argv[1] + " ...") #The blobar url, disabled because we don't clear our screen anymore
+    Redirecter3url = trim2 + '2.1.' + base64ofdomain + '&r=&z=' \
+        + utcoffsetinmin
+
+    # print("[Apul] Resolving " + Redirecter3url + " at " + sys.argv[1] + " ...") #The blobar url, disabled because we don't clear our screen anymore
+
     return Redirecter3url
 
 
-if "related content to what you are looking for" in RedirectorResponseHTML:
-    print("[Apul] Verifed " + sys.argv[1] + " !")
-    base64ofdomain = base64.urlsafe_b64encode(
-        clean_text('/', clean_text('.*://', sys.argv[1])))
+if 'related content to what you are looking for' \
+    in redirectorresponseHTML:
+    print '[Apul] Verifed ' + sys.argv[1] + ' !'
+    base64ofdomain = base64.urlsafe_b64encode(clean_text('/',
+            clean_text('.*://', sys.argv[1])))
     Popups = []
     while True:
-        req3 = urllib2.Request(getnewblobarurl(), headers={'User-Agent': ua})
+        currentblobarurl = getnewblobarurl()
+        req3 = urllib2.Request(currentblobarurl,
+                               headers={'User-Agent': ua})
         Redirector3Response = urllib2.urlopen(req3)
-        PopUpHTML = Redirector3Response.read()
-        PopUpURL = Redirector3Response.geturl()
+        try:
+            Redirector3Response = urllib2.urlopen(req3)
+            PopUpHTML = Redirector3Response.read()
+            PopUpURL = re.sub('htt', 'hxx',
+                              Redirector3Response.geturl())
+        except urllib2.HTTPError, e:
+            print '[ERROR] HTTPError: ' + str(e.code) \
+                + ', could not reach ' + currentblobarurl \
+                + 'to redirect to ' + PopUpURL
+            pass
+        except urllib2.URLError, e:
+            print '[ERROR] URLError: ' + str(e.reason) \
+                + ', could not reach ' + currentblobarurl \
+                + 'to redirect to ' + PopUpURL
+            pass
+        except httplib.HTTPException, e:
+            print '[ERROR] HTTPException, could not reach ' \
+                + currentblobarurl + 'to redirect to ' + PopUpURL
+            pass
+        except Exception:
+            import traceback
+            print '[ERROR] Generic exception: ' \
+                + traceback.format_exc() + ', could not reach ' \
+                + currentblobarurl + 'to redirect to ' + PopUpURL
+            pass
         if 'ww90.' in PopUpURL:
             getnewblobarurl()
-        num = re.search(
-            r"(((((\(\d{3})|(\s\d{3}))((\)|-)|(\s|\) )|(\)-)?))?)|(\d{3}(-|\s)))?\d{3}(-|\s)\d{4}",
-            PopUpHTML
-        )  #.group(0) #Much thanks to Eclipse. Created by Eclipse for Graut and the scambaiting community. https://0-eclipse-0.github.io/phone_regex.txt
+        num = \
+            re.search(r"(((((\(\d{3})|(\s\d{3}))((\)|-)|(\s|\) )|(\)-)?))?)|(\d{3}(-|\s)))?\d{3}(-|\s)\d{4}"
+                      , PopUpURL + PopUpHTML)
+
+               # .group(0) #Much thanks to Eclipse. Created by Eclipse for Graut and the scambaiting community. https://0-eclipse-0.github.io/phone_regex.txt
+
         Redirector3Response.close()
-        if num:
-            outline = PopUpURL + " | {}".format(num.group(0))
-        else:
-            outline = PopUpURL
-        Popups = list(set(Popups))
-        Popups.sort()
-        if outline not in Popups:
-            print(outline)
-            Popups.append(outline)
-            save()
-else:
-    print("[Apul] The redirector " + sys.argv[1] + " does not use blobar.")
+        if base64ofdomain not in PopUpURL:  # Detection could be improved, small patch for now.
+            if num:
+                outline = PopUpURL + ' | {}'.format(num.group(0))
+            else:
+                outline = PopUpURL
+            Popups = list(set(Popups))
+            Popups.sort()
+            if outline not in Popups:
+                print outline
+                Popups.append(outline)
+                save()
+    else:
+        print '[Apul] The redirector ' + sys.argv[1] \
+            + ' does not use blobar.'
