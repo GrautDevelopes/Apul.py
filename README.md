@@ -1,3 +1,5 @@
+# Depreciated
+This version is no longer maintained. The new and improved tool is now located here: https://github.com/GrautDevelopes/Apul3.py
 # Apul.py
 Apul (Automatic PopUp Logger) automatically gets tech support scammer popups and their numbers from blobar redirectors and logs them to a console or file.
 # Usage
